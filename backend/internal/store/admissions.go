@@ -178,13 +178,13 @@ func (s *Store) GetUserApplications(ctx context.Context, userID, role string) ([
 		// until they're converted to students. This would be enhanced with a parent/guardian lookup.
 		query = `
 			SELECT
-				id, application_no, session_id, applicant_name, date_of_birth,
+				id, application_no, session_id, applicant_name, date_of_birth::text,
 				gender, category, religion, class_applied_id, stream_id,
 				father_name, mother_name, guardian_name, guardian_relation,
 				guardian_phone, guardian_alt_phone, guardian_email,
 				address_line, village, district, state, pincode,
 				previous_school, last_class_passed, last_class_percent,
-				photo_file_id, status, status_reason, test_date, test_time,
+				photo_file_id, status, status_reason, test_date::text, test_time,
 				test_venue, decided_by, decided_at, converted_student_id,
 				submitted_at, updated_at, lookup_token
 			FROM admission_applications
@@ -195,13 +195,13 @@ func (s *Store) GetUserApplications(ctx context.Context, userID, role string) ([
 		// Staff see all
 		query = `
 			SELECT
-				id, application_no, session_id, applicant_name, date_of_birth,
+				id, application_no, session_id, applicant_name, date_of_birth::text,
 				gender, category, religion, class_applied_id, stream_id,
 				father_name, mother_name, guardian_name, guardian_relation,
 				guardian_phone, guardian_alt_phone, guardian_email,
 				address_line, village, district, state, pincode,
 				previous_school, last_class_passed, last_class_percent,
-				photo_file_id, status, status_reason, test_date, test_time,
+				photo_file_id, status, status_reason, test_date::text, test_time,
 				test_venue, decided_by, decided_at, converted_student_id,
 				submitted_at, updated_at, lookup_token
 			FROM admission_applications
@@ -223,13 +223,13 @@ func (s *Store) GetUserApplications(ctx context.Context, userID, role string) ([
 func (s *Store) GetApplication(ctx context.Context, applicationID string) (AdmissionApplication, error) {
 	query := `
 		SELECT
-			id, application_no, session_id, applicant_name, date_of_birth,
+			id, application_no, session_id, applicant_name, date_of_birth::text,
 			gender, category, religion, class_applied_id, stream_id,
 			father_name, mother_name, guardian_name, guardian_relation,
 			guardian_phone, guardian_alt_phone, guardian_email,
 			address_line, village, district, state, pincode,
 			previous_school, last_class_passed, last_class_percent,
-			photo_file_id, status, status_reason, test_date, test_time,
+			photo_file_id, status, status_reason, test_date::text, test_time,
 			test_venue, decided_by, decided_at, converted_student_id,
 			submitted_at, updated_at, lookup_token
 		FROM admission_applications
@@ -263,7 +263,7 @@ func (s *Store) CreateApplication(ctx context.Context, app AdmissionApplication)
 			previous_school, last_class_passed, last_class_percent,
 			photo_file_id, status, lookup_token
 		) VALUES (
-			$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13,
+			$1, $2, $3, NULLIF($4, '')::date, $5, $6, $7, $8, $9, $10, $11, $12, $13,
 			$14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27
 		)
 		RETURNING id
@@ -305,7 +305,7 @@ func (s *Store) GetAdmissionDecisions(ctx context.Context, userID, role string) 
 		query = `
 			SELECT
 				id, application_no, applicant_name, class_applied_id,
-				status, test_date, test_time, test_venue, decided_at, status_reason
+				status, test_date::text, test_time, test_venue, decided_at, status_reason
 			FROM admission_applications
 			WHERE 1=0
 			AND status IN ('SELECTED', 'WAITLISTED', 'REJECTED', 'ADMITTED')
@@ -316,7 +316,7 @@ func (s *Store) GetAdmissionDecisions(ctx context.Context, userID, role string) 
 		query = `
 			SELECT
 				id, application_no, applicant_name, class_applied_id,
-				status, test_date, test_time, test_venue, decided_at, status_reason
+				status, test_date::text, test_time, test_venue, decided_at, status_reason
 			FROM admission_applications
 			WHERE status IN ('SELECTED', 'WAITLISTED', 'REJECTED', 'ADMITTED', 'FEE_PENDING')
 			ORDER BY decided_at DESC

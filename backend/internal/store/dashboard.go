@@ -8,29 +8,7 @@ import (
 
 // GetStudentEnrollment returns the enrollment record for a student in a specific session.
 func (s *Store) GetStudentEnrollment(ctx context.Context, studentID, sessionID string) (map[string]any, error) {
-	const query = `
-		SELECT id::text,
-		       student_id::text,
-		       session_id::text,
-		       class_id::text,
-		       section_id::text,
-		       stream_id::text,
-		       roll_no,
-		       status
-		  FROM enrollments
-		 WHERE student_id = $1::uuid
-		   AND session_id = $2::uuid
-		 LIMIT 1`
-
-	var enrollment map[string]any
-	err := s.pool.QueryRow(ctx, query, studentID, sessionID).Scan(
-		&enrollment, // This won't work; we need structured scanning
-	)
-	if err != nil {
-		return nil, fmt.Errorf("get student enrollment: %w", noRows(err))
-	}
-
-	return enrollment, nil
+	return s.GetStudentEnrollmentV2(ctx, studentID, sessionID)
 }
 
 // GetStudentEnrollment returns the enrollment record for a student in a specific session.
