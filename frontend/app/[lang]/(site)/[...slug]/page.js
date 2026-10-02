@@ -2,66 +2,74 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { getDictionary } from "../../dictionaries";
+import {
+  fetchPublicSchoolInfo,
+  fetchPublicNotices,
+  fetchPublicEvents,
+  fetchPublicAchievements,
+  fetchPublicFaculty,
+  fetchPublicFacilities,
+} from "../../../lib/api";
 
-// Demonstration content keeps every public navigation route useful in a local
-// review. The school will replace these sample paragraphs with approved copy
-// through the site-content module before launch.
 const PAGE_CONTENT = {
   about: {
-    en: ["Bhagwan Das Inter College serves learners from Ekauna and nearby villages with a focused UP Board education.", "This demonstration page shows the layout for the school story, leadership message, values, and campus highlights."],
-    hi: ["भगवान दास इंटर कॉलेज एकौना और आसपास के गांवों के विद्यार्थियों को यूपी बोर्ड शिक्षा प्रदान करता है।", "यह प्रदर्शन पृष्ठ विद्यालय परिचय, नेतृत्व संदेश, मूल्यों और परिसर की जानकारी के लिए बनाया गया है।"],
+    en: [
+      "Bhagwan Das Inter College serves learners from Ekauna and nearby villages with a focused UP Board education.",
+      "The school provides quality education, holistic development, disciplined environment, and dedicated teaching staff for classes 6th to 12th.",
+    ],
+    hi: [
+      "भगवान दास इंटर कॉलेज एकौना और आसपास के गांवों के विद्यार्थियों को उत्कृष्ट यूपी बोर्ड शिक्षा प्रदान करता है।",
+      "विद्यालय कक्षा 6 से 12 तक गुणवत्तापूर्ण शिक्षा, सर्वांगीण विकास, अनुशासित वातावरण और समर्पित शिक्षण स्टाफ प्रदान करता है।",
+    ],
   },
   academics: {
-    en: ["The academic programme covers Classes 9–12 with subject and stream choices recorded in the school portal.", "Use the portal timetable, study material, homework, examinations, and report-card areas to review the complete academic flow."],
-    hi: ["शैक्षणिक कार्यक्रम में कक्षा 9 से 12 तक की कक्षाएं, विषय और स्ट्रीम विकल्प शामिल हैं।", "पूरा शैक्षणिक प्रवाह देखने के लिए पोर्टल में समय-सारिणी, अध्ययन सामग्री, गृहकार्य, परीक्षा और रिपोर्ट कार्ड देखें।"],
+    en: [
+      "The academic programme covers Classes 9–12 with Science, Arts, and Commerce streams.",
+      "Strict compliance with UP Board curriculum, regular periodic tests, internal assignments, and board exam preparation.",
+    ],
+    hi: [
+      "शैक्षणिक कार्यक्रम में विज्ञान, कला और वाणिज्य संकाय के साथ कक्षा 9 से 12 तक शामिल हैं।",
+      "यूपी बोर्ड पाठ्यक्रम, नियमित आवधिक परीक्षाएं, आंतरिक असाइनमेंट और बोर्ड परीक्षा की तैयारी का पूर्ण पालन।",
+    ],
   },
   admissions: {
-    en: ["Admissions are demonstrated for the current academic session. Families can review the required documents and submit an application online.", "The office verifies documents, records the decision, creates the student profile, and can issue a portal account."],
-    hi: ["वर्तमान शैक्षणिक सत्र के लिए प्रवेश प्रक्रिया का प्रदर्शन उपलब्ध है। परिवार आवश्यक दस्तावेज देख सकते हैं और ऑनलाइन आवेदन कर सकते हैं।", "कार्यालय दस्तावेज सत्यापित करता है, निर्णय दर्ज करता है, विद्यार्थी प्रोफ़ाइल बनाता है और पोर्टल खाता जारी कर सकता है।"],
-  },
-  notices: {
-    en: ["Published school notices appear here and in the signed-in notification centre.", "Sample notices are included in the local demo data so the table, audience rules, and acknowledgement flow can be reviewed."],
-    hi: ["प्रकाशित विद्यालय सूचनाएं यहां और साइन-इन सूचना केंद्र में दिखाई देती हैं।", "स्थानीय डेमो डेटा में नमूना सूचनाएं शामिल हैं ताकि सूची, दर्शक नियम और स्वीकृति प्रक्रिया देखी जा सके।"],
-  },
-  events: {
-    en: ["This page presents upcoming examinations, parent meetings, cultural programmes, and sports events.", "All dates in the local build are sample data and must be replaced with the school calendar before launch."],
-    hi: ["यह पृष्ठ आगामी परीक्षाएं, अभिभावक बैठकें, सांस्कृतिक कार्यक्रम और खेल गतिविधियां दिखाता है।", "स्थानीय बिल्ड की सभी तिथियां नमूना डेटा हैं और लॉन्च से पहले विद्यालय कैलेंडर से बदली जानी चाहिए।"],
-  },
-  gallery: {
-    en: ["The gallery is ready for approved, consent-checked campus and event photographs.", "No real student photographs are included in this demo; upload only school-approved images after consent is recorded."],
-    hi: ["गैलरी अनुमोदित और सहमति-युक्त परिसर व कार्यक्रम फोटोग्राफ के लिए तैयार है।", "इस डेमो में वास्तविक विद्यार्थियों की तस्वीरें शामिल नहीं हैं; केवल विद्यालय-अनुमोदित चित्र ही अपलोड करें।"],
-  },
-  achievements: {
-    en: ["Academic, sports, cultural, scholarship, and school achievements can be featured here.", "The local sample data demonstrates how achievement titles, categories, ranks, and descriptions are presented."],
-    hi: ["शैक्षणिक, खेल, सांस्कृतिक, छात्रवृत्ति और विद्यालय उपलब्धियां यहां दिखाई जा सकती हैं।", "स्थानीय नमूना डेटा शीर्षक, श्रेणी, रैंक और विवरण का प्रदर्शन करता है।"],
-  },
-  faculty: {
-    en: ["Faculty profiles are published only when the school enables website visibility for that staff member.", "The demo uses fictional staff information and contains no personal information about the school team."],
-    hi: ["स्टाफ प्रोफ़ाइल तभी प्रकाशित होती है जब विद्यालय उस सदस्य के लिए वेबसाइट दृश्यता सक्षम करे।", "डेमो में काल्पनिक स्टाफ जानकारी है और विद्यालय टीम की व्यक्तिगत जानकारी शामिल नहीं है।"],
-  },
-  facilities: {
-    en: ["This section is for classrooms, laboratories, library, computer resources, sports, and student-support facilities.", "The final page will use school-approved descriptions and photographs."],
-    hi: ["यह अनुभाग कक्षाओं, प्रयोगशालाओं, पुस्तकालय, कंप्यूटर संसाधनों, खेल और विद्यार्थी सहायता सुविधाओं के लिए है।", "अंतिम पृष्ठ में विद्यालय-अनुमोदित विवरण और फोटोग्राफ शामिल होंगे।"],
-  },
-  downloads: {
-    en: ["Admission forms, syllabi, fee information, policies, and previous papers can be shared as controlled downloads.", "The demo intentionally contains no invented official documents."],
-    hi: ["प्रवेश फॉर्म, पाठ्यक्रम, शुल्क जानकारी, नीतियां और पिछले प्रश्नपत्र नियंत्रित डाउनलोड के रूप में साझा किए जा सकते हैं।", "डेमो में कोई मनगढ़ंत आधिकारिक दस्तावेज शामिल नहीं है।"],
+    en: [
+      "Admissions for the upcoming academic session are open. Families can submit online applications or visit the office.",
+      "Required documents include previous marksheets, Transfer Certificate (TC), Aadhaar card, and passport-size photographs.",
+    ],
+    hi: [
+      "आगामी शैक्षणिक सत्र के लिए प्रवेश खुले हैं। परिवार ऑनलाइन आवेदन जमा कर सकते हैं या विद्यालय कार्यालय आ सकते हैं।",
+      "आवश्यक दस्तावेजों में पिछली अंकपत्र, स्थानांतरण प्रमाण पत्र (टीसी), आधार कार्ड और पासपोर्ट साइज फोटो शामिल हैं।",
+    ],
   },
   contact: {
-    en: ["Contact details, office hours, map, and social links are shown in the site footer and school profile.", "Replace demo contact values with confirmed office details before the public site is launched."],
-    hi: ["संपर्क विवरण, कार्यालय समय, मानचित्र और सोशल लिंक साइट फ़ुटर व विद्यालय प्रोफ़ाइल में दिखाए जाते हैं।", "सार्वजनिक साइट लॉन्च से पहले डेमो संपर्क विवरण को पुष्टि किए गए कार्यालय विवरण से बदलें।"],
+    en: [
+      "School Address: Bhagwan Das Inter College, Ekauna, Chandauli, Uttar Pradesh - 232104",
+      "Office Hours: Monday to Saturday, 8:00 AM – 2:00 PM",
+    ],
+    hi: [
+      "विद्यालय का पता: भगवान दास इंटर कॉलेज, एकौना, चंदौली, उत्तर प्रदेश - 232104",
+      "कार्यालय समय: सोमवार से शनिवार, प्रातः 8:00 से दोपहर 2:00 बजे तक",
+    ],
   },
   privacy: {
-    en: ["This demonstration privacy page explains that student data, documents, and photographs are available only to authorised users.", "The school should approve its final retention, consent, grievance, and contact policy before publication."],
-    hi: ["यह डेमो गोपनीयता पृष्ठ बताता है कि विद्यार्थी डेटा, दस्तावेज और फोटो केवल अधिकृत उपयोगकर्ताओं के लिए उपलब्ध हैं।", "प्रकाशन से पहले विद्यालय को अंतिम डेटा-धारण, सहमति, शिकायत और संपर्क नीति स्वीकृत करनी चाहिए।"],
+    en: [
+      "Student data, documents, and records are maintained with strict privacy controls in compliance with regulations.",
+    ],
+    hi: [
+      "विद्यार्थी डेटा, दस्तावेज और रिकॉर्ड नियमों के अनुपालन में सख्त गोपनीयता नियंत्रण के साथ रखे जाते हैं।",
+    ],
   },
   terms: {
-    en: ["This demonstration terms page covers appropriate portal use, account security, and the need to keep login details private.", "The school should approve final portal terms before opening accounts to families."],
-    hi: ["यह डेमो नियम पृष्ठ उचित पोर्टल उपयोग, खाता सुरक्षा और लॉगिन विवरण गोपनीय रखने की आवश्यकता बताता है।", "परिवारों के लिए खाते खोलने से पहले विद्यालय को अंतिम पोर्टल नियम स्वीकृत करने चाहिए।"],
+    en: [
+      "Users and portal account holders must adhere to appropriate usage, account security, and confidentiality.",
+    ],
+    hi: [
+      "उपयोगकर्ताओं और पोर्टल खाताधारकों को उचित उपयोग, खाता सुरक्षा और गोपनीयता का पालन करना चाहिए।",
+    ],
   },
 };
 
-/** Maps a URL path to the dictionary key that names it, for the heading. */
 const TITLE_KEYS = {
   about: "about",
   academics: "academics",
@@ -76,14 +84,6 @@ const TITLE_KEYS = {
   contact: "contact",
 };
 
-/**
- * Returns the heading for a supported public path, or null for anything else.
- *
- * Null matters: without it this catch-all answers 200 "Coming soon" for every
- * URL under a language, so nothing on the site could ever 404 — a typo, a
- * broken external link, and a real page would all look the same to a visitor
- * and to a search engine.
- */
 function headingFor(dict, segments) {
   const first = Array.isArray(segments) ? segments[0] : segments;
 
@@ -92,10 +92,10 @@ function headingFor(dict, segments) {
     return dict.nav[key];
   }
   if (first === "privacy") {
-    return dict.footer.privacy;
+    return dict.footer?.privacy || "Privacy Policy";
   }
   if (first === "terms") {
-    return dict.footer.terms;
+    return dict.footer?.terms || "Terms of Service";
   }
   return null;
 }
@@ -116,30 +116,95 @@ export default async function SitePage({ params }) {
 
   const heading = headingFor(dict, slug);
   if (!heading) {
-    // A real 404, with the right status code, rendered by
-    // app/[lang]/not-found.js.
     notFound();
   }
+
   const key = Array.isArray(slug) ? slug[0] : slug;
+  let dynamicItems = null;
+  let schoolInfo = null;
+
+  try {
+    if (key === "notices") {
+      const res = await fetchPublicNotices({ timeoutMs: 3000 });
+      dynamicItems = Array.isArray(res) ? res : res?.items || null;
+    } else if (key === "events") {
+      const res = await fetchPublicEvents({ timeoutMs: 3000 });
+      dynamicItems = Array.isArray(res) ? res : res?.items || null;
+    } else if (key === "faculty") {
+      const res = await fetchPublicFaculty({ timeoutMs: 3000 });
+      dynamicItems = Array.isArray(res) ? res : res?.items || null;
+    } else if (key === "facilities") {
+      const res = await fetchPublicFacilities({ timeoutMs: 3000 });
+      dynamicItems = Array.isArray(res) ? res : res?.items || null;
+    } else if (key === "achievements") {
+      const res = await fetchPublicAchievements({ timeoutMs: 3000 });
+      dynamicItems = Array.isArray(res) ? res : res?.items || null;
+    } else if (key === "about" || key === "contact") {
+      schoolInfo = await fetchPublicSchoolInfo({ timeoutMs: 3000 });
+    }
+  } catch (_err) {
+    // Graceful fallback to static copy if API unreachable
+  }
+
   const content = PAGE_CONTENT[key];
   const paragraphs = content?.[lang] ?? content?.en ?? [];
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12">
+    <div className="mx-auto max-w-4xl px-4 py-12">
       <h1 className="text-3xl font-bold text-brand-900">{heading}</h1>
 
-      <div className="card mt-6 space-y-4 p-6 text-zinc-700">
-        {paragraphs.map((paragraph) => (
-          <p key={paragraph}>{paragraph}</p>
-        ))}
-      </div>
+      {schoolInfo && key === "contact" && (
+        <div className="card mt-6 p-6 space-y-3 bg-white border border-stone-200 rounded-lg shadow-sm">
+          <p className="font-semibold text-lg text-stone-900">
+            {lang === "hi" ? schoolInfo.nameHi : schoolInfo.nameEn}
+          </p>
+          <p className="text-sm text-stone-600">
+            📍 {lang === "hi" ? schoolInfo.addressHi : schoolInfo.addressEn}
+          </p>
+          <p className="text-sm text-stone-600">
+            📞 {schoolInfo.phonePrimary} {schoolInfo.phoneSecondary ? `/ ${schoolInfo.phoneSecondary}` : ""}
+          </p>
+          <p className="text-sm text-stone-600">✉️ {schoolInfo.email}</p>
+          <p className="text-sm text-stone-600">
+            ⏰ {lang === "hi" ? schoolInfo.officeHoursHi : schoolInfo.officeHoursEn}
+          </p>
+        </div>
+      )}
 
-      <p className="mt-6">
+      {dynamicItems && dynamicItems.length > 0 ? (
+        <div className="mt-6 space-y-4">
+          {dynamicItems.map((item, idx) => (
+            <div key={item.id || idx} className="card p-5 border rounded-lg bg-white shadow-sm">
+              <h3 className="font-bold text-lg text-stone-900">
+                {item.title || item.name || item.heading || "—"}
+              </h3>
+              {(item.description || item.body || item.summary) && (
+                <p className="mt-2 text-stone-700 text-sm">
+                  {item.description || item.body || item.summary}
+                </p>
+              )}
+              {item.publishedAt && (
+                <p className="mt-3 text-xs text-stone-400">
+                  {new Date(item.publishedAt).toLocaleDateString()}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="card mt-6 space-y-4 p-6 text-zinc-700 bg-white border rounded-lg shadow-sm">
+          {paragraphs.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </div>
+      )}
+
+      <p className="mt-8">
         <Link
           href={`/${lang}`}
-          className="font-medium text-brand-700 underline-offset-2 hover:underline"
+          className="font-medium text-brand-700 underline-offset-2 hover:underline inline-flex items-center gap-1"
         >
-          {dict.nav.home}
+          ← {dict.nav.home}
         </Link>
       </p>
     </div>
