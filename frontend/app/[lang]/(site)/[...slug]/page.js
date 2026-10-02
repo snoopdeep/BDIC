@@ -9,7 +9,7 @@ import {
   fetchPublicAchievements,
   fetchPublicFaculty,
   fetchPublicFacilities,
-} from "../../../lib/api";
+} from "../../../../lib/api";
 
 const PAGE_CONTENT = {
   about: {
