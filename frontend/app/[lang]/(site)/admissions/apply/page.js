@@ -27,7 +27,7 @@ export default function ApplyPage({ params }) {
     applicantName: "",
     dateOfBirth: "",
     gender: "MALE",
-    category: "GENERAL",
+    category: "GEN",
     classAppliedId: "IX",
     fatherName: "",
     motherName: "",
@@ -176,6 +176,23 @@ export default function ApplyPage({ params }) {
                   <option value="MALE">Male / बालक</option>
                   <option value="FEMALE">Female / बालिका</option>
                   <option value="OTHER">Other</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-stone-700 mb-1">
+                  Category / वर्ग
+                </label>
+                <select
+                  value={form.category}
+                  onChange={(e) => handleChange("category", e.target.value)}
+                  className="w-full px-3 py-2 border rounded-xl text-sm bg-white"
+                >
+                  <option value="GEN">General / सामान्य</option>
+                  <option value="OBC">OBC / अन्य पिछड़ा वर्ग</option>
+                  <option value="SC">SC / अनुसूचित जाति</option>
+                  <option value="ST">ST / अनुसूचित जनजाति</option>
+                  <option value="EWS">EWS / आर्थिक रूप से कमजोर</option>
                 </select>
               </div>
             </div>

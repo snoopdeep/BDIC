@@ -149,6 +149,44 @@ func (s *Server) handlePublicSubmitApplication(w http.ResponseWriter, r *http.Re
 		input.State = "Uttar Pradesh"
 	}
 
+	// Sanitize Category to match DB constraint ('GEN', 'OBC', 'SC', 'ST', 'EWS')
+	if input.Category != nil {
+		cat := strings.ToUpper(strings.TrimSpace(*input.Category))
+		if cat == "GENERAL" || cat == "GEN" {
+			cat = "GEN"
+		} else if cat != "OBC" && cat != "SC" && cat != "ST" && cat != "EWS" {
+			cat = "GEN"
+		}
+		input.Category = &cat
+	} else {
+		defaultCat := "GEN"
+		input.Category = &defaultCat
+	}
+
+	// Sanitize Gender ('MALE', 'FEMALE', 'OTHER')
+	if input.Gender != nil {
+		g := strings.ToUpper(strings.TrimSpace(*input.Gender))
+		if g != "FEMALE" && g != "OTHER" {
+			g = "MALE"
+		}
+		input.Gender = &g
+	} else {
+		defaultG := "MALE"
+		input.Gender = &defaultG
+	}
+
+	// Clean Phone number to ensure 10 digits
+	cleanPhone := strings.Map(func(r rune) rune {
+		if r >= '0' && r <= '9' {
+			return r
+		}
+		return -1
+	}, input.GuardianPhone)
+	if len(cleanPhone) > 10 {
+		cleanPhone = cleanPhone[len(cleanPhone)-10:]
+	}
+	input.GuardianPhone = cleanPhone
+
 	// Resolve ClassAppliedID if class code (e.g. "IX", "LKG") was passed instead of UUID
 	if classes, err := s.store.ListClasses(r.Context(), input.SessionID); err == nil {
 		for _, c := range classes {
