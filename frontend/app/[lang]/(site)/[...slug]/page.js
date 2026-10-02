@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 
 import { getDictionary } from "../../dictionaries";
 import {
-  fetchPublicSchoolInfo,
+  fetchPublicSchool,
   fetchPublicNotices,
   fetchPublicEvents,
   fetchPublicAchievements,
@@ -140,7 +140,7 @@ export default async function SitePage({ params }) {
       const res = await fetchPublicAchievements({ timeoutMs: 3000 });
       dynamicItems = Array.isArray(res) ? res : res?.items || null;
     } else if (key === "about" || key === "contact") {
-      schoolInfo = await fetchPublicSchoolInfo({ timeoutMs: 3000 });
+      schoolInfo = await fetchPublicSchool({ timeoutMs: 3000 });
     }
   } catch (_err) {
     // Graceful fallback to static copy if API unreachable
