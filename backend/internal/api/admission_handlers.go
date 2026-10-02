@@ -149,6 +149,16 @@ func (s *Server) handlePublicSubmitApplication(w http.ResponseWriter, r *http.Re
 		input.State = "Uttar Pradesh"
 	}
 
+	// Resolve ClassAppliedID if class code (e.g. "IX", "LKG") was passed instead of UUID
+	if classes, err := s.store.ListClasses(r.Context(), input.SessionID); err == nil {
+		for _, c := range classes {
+			if c.Code == input.ClassAppliedID || c.ID == input.ClassAppliedID {
+				input.ClassAppliedID = c.ID
+				break
+			}
+		}
+	}
+
 	// Number-series periods are the school-year name (for example "2026-27"),
 	// not the session UUID. Looking it up here also rejects an invalid supplied
 	// session before a number can be consumed.
