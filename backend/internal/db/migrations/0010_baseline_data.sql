@@ -59,46 +59,25 @@ INSERT INTO streams (code, name_en, name_hi, sort_order) VALUES
     ('ART', 'Arts',     'कला',     3);
 
 -- ---------------------------------------------------------------------------
--- Classes. LKG, UKG, Nursery, and Classes 1 to 12.
+-- Classes. BDIC is an Inter College, so classes 9 to 12, with streams from 11.
 -- ---------------------------------------------------------------------------
 INSERT INTO classes (school_id, code, name_en, name_hi, level, has_stream, sort_order)
-SELECT id, 'LKG',  'LKG',       'एल.के.जी.', -2, false, 1 FROM schools
+SELECT id, 'IX',  'Class 9',  'कक्षा 9',  9,  false, 1 FROM schools
 UNION ALL
-SELECT id, 'UKG',  'UKG',       'यू.के.जी.', -1, false, 2 FROM schools
+SELECT id, 'X',   'Class 10', 'कक्षा 10', 10, false, 2 FROM schools
 UNION ALL
-SELECT id, 'NUR',  'Nursery',   'नर्सरी',    0,  false, 3 FROM schools
+SELECT id, 'XI',  'Class 11', 'कक्षा 11', 11, true,  3 FROM schools
 UNION ALL
-SELECT id, 'I',    'Class 1',   'कक्षा 1',   1,  false, 4 FROM schools
-UNION ALL
-SELECT id, 'II',   'Class 2',   'कक्षा 2',   2,  false, 5 FROM schools
-UNION ALL
-SELECT id, 'III',  'Class 3',   'कक्षा 3',   3,  false, 6 FROM schools
-UNION ALL
-SELECT id, 'IV',   'Class 4',   'कक्षा 4',   4,  false, 7 FROM schools
-UNION ALL
-SELECT id, 'V',    'Class 5',   'कक्षा 5',   5,  false, 8 FROM schools
-UNION ALL
-SELECT id, 'VI',   'Class 6',   'कक्षा 6',   6,  false, 9 FROM schools
-UNION ALL
-SELECT id, 'VII',  'Class 7',   'कक्षा 7',   7,  false, 10 FROM schools
-UNION ALL
-SELECT id, 'VIII', 'Class 8',   'कक्षा 8',   8,  false, 11 FROM schools
-UNION ALL
-SELECT id, 'IX',   'Class 9',   'कक्षा 9',   9,  false, 12 FROM schools
-UNION ALL
-SELECT id, 'X',    'Class 10',  'कक्षा 10',  10, false, 13 FROM schools
-UNION ALL
-SELECT id, 'XI',   'Class 11',  'कक्षा 11',  11, true,  14 FROM schools
-UNION ALL
-SELECT id, 'XII',  'Class 12',  'कक्षा 12',  12, true,  15 FROM schools;
+SELECT id, 'XII', 'Class 12', 'कक्षा 12', 12, true,  4 FROM schools;
 
--- Sections. Two per class (A, B) for LKG through Class 10; one per stream for Intermediate.
+-- Sections. Two per class for High School; one per stream for Intermediate,
+-- which is how a school this size is normally divided.
 INSERT INTO sections (class_id, stream_id, name, capacity, sort_order)
 SELECT c.id, NULL::uuid, 'A', 60, 1
-  FROM classes c WHERE c.code IN ('LKG', 'UKG', 'NUR', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X')
+  FROM classes c WHERE c.code IN ('IX', 'X')
 UNION ALL
 SELECT c.id, NULL::uuid, 'B', 60, 2
-  FROM classes c WHERE c.code IN ('LKG', 'UKG', 'NUR', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X')
+  FROM classes c WHERE c.code IN ('IX', 'X')
 UNION ALL
 SELECT c.id, s.id, s.name_en, 60, s.sort_order
   FROM classes c CROSS JOIN streams s
