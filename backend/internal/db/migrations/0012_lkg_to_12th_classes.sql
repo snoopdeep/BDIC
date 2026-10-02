@@ -1,5 +1,8 @@
 -- 0012_lkg_to_12th_classes.sql
--- Expand classes table to include LKG, UKG, Nursery, and Classes 1 to 8.
+-- Allow pre-primary levels (-5 to 0) in classes_level_range constraint, then add LKG, UKG, Nursery, and Classes 1 to 8.
+
+ALTER TABLE classes DROP CONSTRAINT IF EXISTS classes_level_range;
+ALTER TABLE classes ADD CONSTRAINT classes_level_range CHECK (level BETWEEN -5 AND 12);
 
 INSERT INTO classes (school_id, code, name_en, name_hi, level, has_stream, sort_order)
 SELECT s.id, c.code, c.name_en, c.name_hi, c.level, c.has_stream, c.sort_order
