@@ -4,7 +4,7 @@ import { useState } from "react";
 import * as api from "../../lib/api";
 import { errorMessage, useApiData } from "../../lib/portal";
 import { Alert, Button, EmptyState, LoadingBlock, PageHeader, Panel, Modal } from "../ui";
-import { useSession } from "../SessionContext";
+import { useSession } from "../../lib/session";
 
 export default function GalleryView({ lang, dict }) {
   const session = useSession();

@@ -126,7 +126,8 @@ function PortalFrame({ lang, dict, children }) {
     setNavOpen(false);
   }, [pathname]);
 
-  const sections = NAV_BY_ROLE[user.role] ?? ["dashboard"];
+  const roleKey = user.role?.toUpperCase() || user.role;
+  const sections = NAV_BY_ROLE[roleKey] ?? NAV_BY_ROLE[user.role] ?? ["dashboard"];
   const portalRoot = `/${lang}/portal`;
 
   async function onSignOut() {
