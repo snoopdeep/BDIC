@@ -1,0 +1,26 @@
+# Dependencies
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+# Local configuration. Never commit a real credential.
+.env
+.env.local
+.env.*.local
+backend/.env
+frontend/.env.local
+
+# Uploaded documents and photographs. These are student records: they belong in
+# the database's backups, not in git.
+backend/var/
+
+# Build output
+backend/bin/
+backend/bdic-api
+
+# Editor and operating system
+.DS_Store
+.idea/
+.vscode/
+*.swp
+node_modules/
